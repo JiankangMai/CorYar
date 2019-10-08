@@ -1,19 +1,27 @@
 {
+  "name": "bromine-mai/cor-yar",
+  "description": "Yar Client in Coroutine",
+  "keywords": [
+    "Yar",
+    "RPC",
+    "YarClient",
+    "Coroutine",
+    "Swoole"
+  ],
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "brominemai",
+      "email": "jiankangmai@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4"
+  },
+  "license": "MIT",
   "autoload": {
     "psr-4" : {
       "BromineMai\\CorYar\\" : "src/"
     }
-  },
-  "repositories": {
-    "packagist": {
-      "type": "composer",
-      "url": "https://packagist.laravel-china.org"
-    }
-  },
-  "require": {
-    "swoole/ide-helper": "~4.3.3"
-  },
-  "require-dev": {
-    "eaglewu/swoole-ide-helper": "dev-master"
   }
 }
