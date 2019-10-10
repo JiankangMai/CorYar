@@ -84,13 +84,13 @@ class Curl implements Transport {
         $intErrno = curl_errno($objCurl);
         $strErrmsg = curl_error($objCurl);
         $this->curlInfo = curl_getinfo($objCurl);
-
+        $intHttpCode = $this->curlInfo['http_code'];
         curl_close($objCurl);
 
-        if(CURLE_OK !== $this->curlInfo['http_code']){
+        if(CURLE_OK === $intErrno){
             return $this->strBody;
         }else{
-            ExceptionHelper::throwYarException(ExceptionHelper::YAR_ERR_TRANSPORT,'curl_post_error:'.json_encode(['strUrl'=>$strUrl, 'intErrno'=>$intErrno, 'strErrmsg'=>$strErrmsg]));
+            ExceptionHelper::throwYarException(ExceptionHelper::YAR_ERR_TRANSPORT,'curl_post_error:'.json_encode(['strUrl'=>$strUrl, 'intErrno'=>$intErrno, 'strErrmsg'=>$strErrmsg,'intHttpCode'=>$intHttpCode]));
         }
         return false;
     }
@@ -132,7 +132,7 @@ class Curl implements Transport {
         $string=$p->render($request);
         $ret = $this->post($this->addRess, $string, null, true);
         $ret=$p->unRender($ret);
-        return  new Response($ret );
+        return  Response::fromZval($ret );
     }
 
     /**

@@ -7,15 +7,28 @@ class Request implements Body{
     public $arrParam=null;
     public $option=null;
     
-    public function __construct($method,$arrParam=[],$option=[])
+    public function __construct($method,$arrParam=[],$option=[],$id=null)
     {
-        $this->id=mt_rand();
+        $this->id=isset($id)?$id:mt_rand();
         $this->method=$method;
         $this->arrParam=$arrParam;
         $this->option=$option;
 
     }
-    
+
+    /**
+     * @param $zval
+     * @return Request
+     * @author Jiankang maijiankang@foxmail.com
+     */
+    public static function fromZval($zval){
+        if(is_array($zval)){
+            return new static($zval['m'],$zval['p'],[],$zval['i']);    
+        }else{
+            return new static($zval->m,$zval->p,[],$zval->i);
+        }
+        
+    }
     public function getId(){
         return $this->id;
     }

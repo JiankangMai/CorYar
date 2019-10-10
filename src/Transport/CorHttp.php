@@ -73,7 +73,7 @@ class CorHttp implements Transport {
         $p=new Protocol;
         $ret=$p->unRender($cli->body );
         $cli->close();
-        return  new Response($ret );
+        return  Response::fromZval($ret );
     }
 
 

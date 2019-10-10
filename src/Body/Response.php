@@ -8,21 +8,30 @@ class Response  implements Body {
     public $retval=null;
     public $err=null;
 
-    public function __construct($isroe)
+    public function __construct($id=null, $status=null, $out=null, $retval=null, $err=null)
     {
+        $this->id=$id;
+        $this->status=$status;
+        $this->out=$out;
+        $this->retval=$retval;
+        $this->err=$err;
+    }
+    
+    public static  function fromZval($isroe){
         if(is_array($isroe)){
-            $this->id=isset($isroe['i'])?$isroe['i']:null;;
-            $this->status=isset($isroe['s'])?$isroe['s']:null;
-            $this->out=isset($isroe['o'])?$isroe['o']:null;
-            $this->retval=isset($isroe['r'])?$isroe['r']:null;
-            $this->err=isset($isroe['e'])?$isroe['e']:null;
+            $id=isset($isroe['i'])?$isroe['i']:null;;
+            $status=isset($isroe['s'])?$isroe['s']:null;
+            $out=isset($isroe['o'])?$isroe['o']:null;
+            $retval=isset($isroe['r'])?$isroe['r']:null;
+            $err=isset($isroe['e'])?$isroe['e']:null;
         }else{
-            $this->id=isset($isroe->i)?$isroe->i:null;;
-            $this->status=isset($isroe->s)?$isroe->s:null;
-            $this->out=isset($isroe->o)?$isroe->o:null;
-            $this->retval=isset($isroe->r)?$isroe->r:null;
-            $this->err=isset($isroe->e)?$isroe->e:null;    
+            $id=isset($isroe->i)?$isroe->i:null;;
+            $status=isset($isroe->s)?$isroe->s:null;
+            $out=isset($isroe->o)?$isroe->o:null;
+            $retval=isset($isroe->r)?$isroe->r:null;
+            $err=isset($isroe->e)?$isroe->e:null;
         }
+        return new static($id,$status,$out,$retval,$err); 
     }
     
     public function getId(){
