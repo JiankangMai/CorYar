@@ -69,9 +69,8 @@ class Server{
                     'line'=>$e->getLine(),
                     '_type'=>get_class($e),
                 ]);
-        }finally{
-            $this->output($p->render($response));
         }
+        $this->output($p->render($response));
         return $result;
     }
 
