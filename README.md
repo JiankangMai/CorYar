@@ -12,44 +12,62 @@
 ## 安装
 composer一键安装  ` composer require bromine-mai/cor-yar`
 
+
+然后在项目bootstrap中文件中  加载composer自带的psr类加载器即可
+```
+require_once (ROOT_PATH.'/vendor/autoload.php');
+```
 CorYar非常轻量，没有对Yar拓展的依赖，开箱即用。
 
 ## Client使用
 
 ```
 <?php 
-//在项目bootstrap中文件中  加载composer自带类加载器
-require_once (ROOT_PATH.'/vendor/autoload.php');
-
 //使用use导入新类方式替换客户端
 use \BromineMai\CorYar\Client\Client as Yar_Client;
 $client = new Yar_Client("http://host/api/");
 $result = $client->api("parameter);
 
 ```
-在加载Composer类加载后,使用`\BromineMai\CorYar\Client\Client`替换Yar_Client，或者使用use导入新类方式替换客户端即可。
 
-兼容原生Yar。未安装Yar的情况下仍能直接使用原生的Exception,配置常量等，使用方式参考官方文档即可。
+兼容原生Yar。未安装Yar的情况下仍能直接使用原生的Exception,配置常量等，使用方式和API参考官方文档即可。
 
 底层会根据上下文自动使用同步，或者协程方式进行RPC调用，无需过多关注细节。
+基本上替换Yar客户端就是一行`use \BromineMai\CorYar\Client\Client as Yar_Client;`的事
 
 ## Server使用
 由于原生Yar Server依赖`SG(request_info)`等全局变量，无法在Swoole Server环境下运行。
 
 为了部署了Yar的服务迁移到Swoole上，同时提供Swoole版本的Yar_Server用于Swoole服务端。
+
 ```
-require_once (ROOT_PATH.'/vendor/autoload.php');
+use \BromineMai\CorYar\Server\SwooleServer as Yar_Server;
 $http = new Server("127.0.0.1", 9501);
 $http->on('request', function ($request, $response) {
-    $server=new \BromineMai\CorYar\Server\SwooleServer(new XXXApi());
+    $server=new Yar_Server(new XXXApi());
 	$server->setIoHandler($request,$response);//设置IO句柄
 	$server->handle(); 
 });
 $http->start();
 ```
-`SwooleYar`与原生Server相比，需要在调用`handle()`前，额外的将swoole的`$request, $response`对象通过`setIoHandler`传给`$server`，其他使用方法和原生Yar一致。
 
-当然，你也可以使用更基础的`\BromineMai\CorYar\Server\Server`在非Swoole环境下，作为Yar原生服务端的替代。
+`SwooleServer`与原生Server相比，需要在调用`handle()`前，额外的将swoole的`$request, $response`对象通过`setIoHandler`传给`$server`，其他使用方法和原生Yar一致。
+
+
+如果你使用的Swoole框架屏蔽了底层细节，令你无法获取`\Swoole\Http\Request`,`\Swoole\Http\Response`变量，你也可以通过设置输入输出的回调方法代替`setIoHandler()`
+```
+        $server->setInputHandle(function()use($xxFrameworkRequest){
+            return $xxFrameworkRequest->getRawContent();
+        });
+        $server->setOutputHandle(function($result){
+            echo $result;
+        });
+```
+
+
+
+
+CorYar也提供了更基础的`\BromineMai\CorYar\Server\Server`在非Swoole环境下，作为Yar原生服务端的替代。
 
 
 ## 依赖
